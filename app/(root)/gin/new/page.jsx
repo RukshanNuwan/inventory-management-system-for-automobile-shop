@@ -300,8 +300,7 @@ const page = () => {
                                     >
                                       {field.value
                                         ? items.find(
-                                            (item) =>
-                                              item.item_name === field.value
+                                            (item) => item.id === field.value.id
                                           )?.item_name
                                         : "Select item"}
                                       <ChevronsUpDown className="opacity-50" />
@@ -321,14 +320,41 @@ const page = () => {
                                       <CommandGroup>
                                         {items &&
                                           items.map((item) => (
+                                            // <CommandItem
+                                            //   value={item.item_name}
+                                            //   key={item.id}
+                                            //   onSelect={() => {
+                                            //     form.setValue(
+                                            //       "item",
+                                            //       item.value
+                                            //     );
+                                            //   }}
+                                            // >
+                                            //   {item.item_name}
+                                            //   <Check
+                                            //     className={cn(
+                                            //       "ml-auto",
+                                            //       item.item_name === field.value
+                                            //         ? "opacity-100"
+                                            //         : "opacity-0"
+                                            //     )}
+                                            //   />
+                                            // </CommandItem>
                                             <CommandItem
-                                              value={item.item_name}
+                                              value={item}
                                               key={item.id}
-                                              onSelect={() => {
-                                                form.setValue(
-                                                  "item",
-                                                  item.value
+                                              onSelect={(value) => {
+                                                const selectedItem = items.find(
+                                                  (i) =>
+                                                    i.item_name ===
+                                                    value.item_name
                                                 );
+                                                field.onChange({
+                                                  id: selectedItem?.id || "",
+                                                  name:
+                                                    selectedItem?.item_name ||
+                                                    "",
+                                                });
                                               }}
                                             >
                                               {item.item_name}
