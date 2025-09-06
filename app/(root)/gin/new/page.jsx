@@ -212,7 +212,7 @@ const page = () => {
                           )}
                         /> */}
 
-                        <FormField
+                        {/* <FormField
                           control={form.control}
                           name="item"
                           render={({ field }) => (
@@ -230,9 +230,9 @@ const page = () => {
                                       )}
                                     >
                                       {field.value
-                                        ? items.find(
-                                            (item) => item.item_name === field.value.item_name
-                                          )
+                                        ? items.find((item) => {
+                                            return item.id === field.value.id;
+                                          })
                                         : "Select Item"}
                                       <ChevronsUpDown className="opacity-50" />
                                     </Button>
@@ -256,7 +256,9 @@ const page = () => {
                                               key={index}
                                               onSelect={(value) => {
                                                 const selectedItem = items.find(
-                                                  (i) => i.item_name === value.item_name
+                                                  (i) =>
+                                                    i.item_name ===
+                                                    value.item_name
                                                 );
                                                 field.onChange({
                                                   id: selectedItem?.id || "",
@@ -267,14 +269,77 @@ const page = () => {
                                               }}
                                             >
                                               {item.item_name}
-                                              {/* <Check
+                                            </CommandItem>
+                                          ))}
+                                      </CommandGroup>
+                                    </CommandList>
+                                  </Command>
+                                </PopoverContent>
+                              </Popover>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        /> */}
+
+                        <FormField
+                          control={form.control}
+                          name="item"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-col">
+                              <FormLabel>Item</FormLabel>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <FormControl>
+                                    <Button
+                                      variant="outline"
+                                      role="combobox"
+                                      className={cn(
+                                        "w-[200px] justify-between",
+                                        !field.value && "text-muted-foreground"
+                                      )}
+                                    >
+                                      {field.value
+                                        ? items.find(
+                                            (item) =>
+                                              item.item_name === field.value
+                                          )?.item_name
+                                        : "Select item"}
+                                      <ChevronsUpDown className="opacity-50" />
+                                    </Button>
+                                  </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[200px] p-0">
+                                  <Command>
+                                    <CommandInput
+                                      placeholder="Search item..."
+                                      className="h-9"
+                                    />
+                                    <CommandList>
+                                      <CommandEmpty>
+                                        No item found.
+                                      </CommandEmpty>
+                                      <CommandGroup>
+                                        {items &&
+                                          items.map((item) => (
+                                            <CommandItem
+                                              value={item.item_name}
+                                              key={item.id}
+                                              onSelect={() => {
+                                                form.setValue(
+                                                  "item",
+                                                  item.value
+                                                );
+                                              }}
+                                            >
+                                              {item.item_name}
+                                              <Check
                                                 className={cn(
                                                   "ml-auto",
-                                                  item.id === field.value.id
+                                                  item.item_name === field.value
                                                     ? "opacity-100"
                                                     : "opacity-0"
                                                 )}
-                                              /> */}
+                                              />
                                             </CommandItem>
                                           ))}
                                       </CommandGroup>
