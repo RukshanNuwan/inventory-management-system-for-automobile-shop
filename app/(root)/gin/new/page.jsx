@@ -136,7 +136,7 @@ const page = () => {
       issuedItems,
     };
 
-    // TODO: second verification dialog
+    // TODO: insert alert dialog for the confirmation purpose
 
     try {
       const responseFromGin = await addGin(finalDataObject);

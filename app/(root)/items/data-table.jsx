@@ -22,8 +22,8 @@ const DataTable = () => {
     <CustomDataTable
       columns={columns}
       data={data}
-      column="part_number"
-      placeholder="Search by Part Number"
+      column="item_name"
+      placeholder="Search by Item Name"
     />
   );
 };

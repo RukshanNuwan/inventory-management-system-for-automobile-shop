@@ -42,8 +42,6 @@ const page = () => {
   const onFormSubmit = async (data) => {
     setIsLoading(true);
 
-    // TODO: item name = part number + item name
-
     try {
       const response = await addItem(data);
 

@@ -142,8 +142,6 @@ const page = () => {
       receivedItems,
     };
 
-    // TODO: Loading status
-
     try {
       const responseFromGrn = await addGrn(finalDataObject);
 

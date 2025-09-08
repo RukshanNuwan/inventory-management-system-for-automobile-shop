@@ -93,7 +93,7 @@ const page = () => {
           items={[
             ["Date", new Date(selectedItem.issued_date).toLocaleDateString()],
             ["Customer", selectedItem.customer],
-            ["Status", selectedItem.status],
+            ["Customer Status", selectedItem.status],
             [
               "Added At",
               convertFirestoreTimestampToString(selectedItem.added_at),

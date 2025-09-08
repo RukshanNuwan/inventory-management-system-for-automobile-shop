@@ -162,7 +162,6 @@ const page = () => {
                       </div>
 
                       <div className="flex gap-2 justify-end">
-                        {/* TODO: add disabled & loader icon for all buttons */}
                         <Button type="submit" disabled={isLoading}>
                           {isLoading && <Loader2 className="animate-spin" />}
                           Submit

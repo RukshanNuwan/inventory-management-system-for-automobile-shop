@@ -94,7 +94,7 @@ const page = () => {
             ["Date", new Date(selectedItem.grn_date).toLocaleDateString()],
             ["Invoice Number", selectedItem.invoice_number],
             ["Supplier", selectedItem.supplier.name],
-            ["Status", selectedItem.status],
+            ["Supplier Status", selectedItem.status],
             [
               "Added At",
               convertFirestoreTimestampToString(selectedItem.added_at),
