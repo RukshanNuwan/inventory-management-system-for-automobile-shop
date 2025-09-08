@@ -1,7 +1,13 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import React from "react";
+import React, { useRef, useState } from "react";
 
 const page = () => {
+  const [searchText, setSearchText] = useState("");
+
+  const printRef = useRef(null);
+
+  const handlePrint = useReactToPrint({})
+
   return (
     <section>
       <div className="p-2">
