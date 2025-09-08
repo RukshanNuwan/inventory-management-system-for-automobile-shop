@@ -42,22 +42,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getItems } from "@/lib/actions/item.actions";
+import { addGin } from "@/lib/actions/gin.actions";
+import { getItems, modifyStock } from "@/lib/actions/item.actions";
 import { issueNoteFormSchema } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
+import { CalendarIcon, Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 const page = () => {
-  const [formData, setFormData] = useState({});
   const [issuedItems, setIssuedItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState();
+  const [selectedItemStock, setSelectedItemStock] = useState("");
 
   const router = useRouter();
 
@@ -102,7 +103,7 @@ const page = () => {
   const onItemDetailsSubmit = (values) => {
     const newItem = {
       item_id: values.item.id,
-      item_name: values.item.name,
+      item_name: values.item.item_name,
       quantity: values.quantity,
       price: values.price,
       value: Number(values.quantity) * Number(values.price),
@@ -125,17 +126,16 @@ const page = () => {
     // TODO: second verification dialog
 
     try {
-      console.log("finalDataObject -> ", finalDataObject);
-      // const responseFromGin = await addGin(finalDataObject);
+      const responseFromGin = await addGin(finalDataObject);
 
-      // for (const item of issuedItems) {
-      //   await modifyStock(item.item_id, -item.quantity);
-      // }
+      for (const item of issuedItems) {
+        await modifyStock(item.item_id, -item.quantity);
+      }
 
-      // if (responseFromGin === "success") {
-      //   toast.success("Success! Data saved successfully.");
-      //   router.push("/gin");
-      // }
+      if (responseFromGin === "success") {
+        toast.success("Success! Data saved successfully.");
+        router.push("/gin");
+      }
     } catch (error) {
       console.log("error -> ", error);
       toast.error("Error: Data not saved.");
@@ -175,118 +175,12 @@ const page = () => {
                       className="space-y-2"
                     >
                       <div className="grid grid-cols-1">
-                        {/* <FormField
-                          control={form.control}
-                          name="item"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Item</FormLabel>
-                              <Select
-                                onValueChange={(value) => {
-                                  const selectedItem = items.find(
-                                    (i) => i.id === value
-                                  );
-                                  field.onChange({
-                                    id: value,
-                                    name: selectedItem?.item_name || "",
-                                  });
-                                }}
-                                defaultValue={field.value?.id}
-                              >
-                                <FormControl>
-                                  <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Select an Item" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {items &&
-                                    items.map((item) => (
-                                      <SelectItem key={item.id} value={item.id}>
-                                        {item.item_name}
-                                      </SelectItem>
-                                    ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        /> */}
-
-                        {/* <FormField
-                          control={form.control}
-                          name="item"
-                          render={({ field }) => (
-                            <FormItem className="flex flex-col">
-                              <FormLabel>Item</FormLabel>
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <FormControl>
-                                    <Button
-                                      variant="outline"
-                                      role="combobox"
-                                      className={cn(
-                                        "w-[200px] justify-between",
-                                        !field.value && "text-muted-foreground"
-                                      )}
-                                    >
-                                      {field.value
-                                        ? items.find((item) => {
-                                            return item.id === field.value.id;
-                                          })
-                                        : "Select Item"}
-                                      <ChevronsUpDown className="opacity-50" />
-                                    </Button>
-                                  </FormControl>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-[200px] p-0">
-                                  <Command>
-                                    <CommandInput
-                                      placeholder="Search item..."
-                                      className="h-9"
-                                    />
-                                    <CommandList>
-                                      <CommandEmpty>
-                                        No item found.
-                                      </CommandEmpty>
-                                      <CommandGroup>
-                                        {items &&
-                                          items.map((item, index) => (
-                                            <CommandItem
-                                              value={item}
-                                              key={index}
-                                              onSelect={(value) => {
-                                                const selectedItem = items.find(
-                                                  (i) =>
-                                                    i.item_name ===
-                                                    value.item_name
-                                                );
-                                                field.onChange({
-                                                  id: selectedItem?.id || "",
-                                                  name:
-                                                    selectedItem?.item_name ||
-                                                    "",
-                                                });
-                                              }}
-                                            >
-                                              {item.item_name}
-                                            </CommandItem>
-                                          ))}
-                                      </CommandGroup>
-                                    </CommandList>
-                                  </Command>
-                                </PopoverContent>
-                              </Popover>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        /> */}
-
                         <FormField
                           control={form.control}
                           name="item"
                           render={({ field }) => (
                             <FormItem className="flex flex-col">
-                              <FormLabel>Item</FormLabel>
+                              <FormLabel>Items</FormLabel>
                               <Popover>
                                 <PopoverTrigger asChild>
                                   <FormControl>
@@ -294,7 +188,7 @@ const page = () => {
                                       variant="outline"
                                       role="combobox"
                                       className={cn(
-                                        "w-[200px] justify-between",
+                                        "w-full justify-between",
                                         !field.value && "text-muted-foreground"
                                       )}
                                     >
@@ -307,7 +201,7 @@ const page = () => {
                                     </Button>
                                   </FormControl>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-[200px] p-0">
+                                <PopoverContent className="w-full p-0">
                                   <Command>
                                     <CommandInput
                                       placeholder="Search item..."
@@ -320,48 +214,21 @@ const page = () => {
                                       <CommandGroup>
                                         {items &&
                                           items.map((item) => (
-                                            // <CommandItem
-                                            //   value={item.item_name}
-                                            //   key={item.id}
-                                            //   onSelect={() => {
-                                            //     form.setValue(
-                                            //       "item",
-                                            //       item.value
-                                            //     );
-                                            //   }}
-                                            // >
-                                            //   {item.item_name}
-                                            //   <Check
-                                            //     className={cn(
-                                            //       "ml-auto",
-                                            //       item.item_name === field.value
-                                            //         ? "opacity-100"
-                                            //         : "opacity-0"
-                                            //     )}
-                                            //   />
-                                            // </CommandItem>
                                             <CommandItem
-                                              value={item}
+                                              value={item.item_name}
                                               key={item.id}
-                                              onSelect={(value) => {
-                                                const selectedItem = items.find(
-                                                  (i) =>
-                                                    i.item_name ===
-                                                    value.item_name
+                                              onSelect={() => {
+                                                form.setValue("item", item);
+                                                setSelectedItemStock(
+                                                  item.stock
                                                 );
-                                                field.onChange({
-                                                  id: selectedItem?.id || "",
-                                                  name:
-                                                    selectedItem?.item_name ||
-                                                    "",
-                                                });
                                               }}
                                             >
                                               {item.item_name}
                                               <Check
                                                 className={cn(
                                                   "ml-auto",
-                                                  item.item_name === field.value
+                                                  item.id === field.value
                                                     ? "opacity-100"
                                                     : "opacity-0"
                                                 )}
@@ -383,11 +250,11 @@ const page = () => {
                         <FormField
                           control={form.control}
                           name="stock"
-                          render={({ field }) => (
+                          render={() => (
                             <FormItem>
                               <FormLabel>Stock</FormLabel>
                               <FormControl>
-                                <Input placeholder="Stock" {...field} />
+                                <div>{selectedItemStock}</div>
                               </FormControl>
                             </FormItem>
                           )}
@@ -560,7 +427,12 @@ const page = () => {
                       />
 
                       <div className="flex gap-2 justify-end">
-                        <Button type="submit" className="bg-[#0d97ff]">
+                        <Button
+                          type="submit"
+                          className="bg-[#0d97ff]"
+                          disabled={isLoading}
+                        >
+                          {isLoading && <Loader2 className="animate-spin" />}
                           Submit
                         </Button>
                       </div>
