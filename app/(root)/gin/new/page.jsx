@@ -68,7 +68,7 @@ const page = () => {
       item: "",
       stock: "",
       quantity: "",
-      price: "",
+      cost_price: "",
       customer: "",
       issued_date: "",
     },
@@ -96,17 +96,31 @@ const page = () => {
   };
 
   const totalAmount = issuedItems.reduce(
-    (sum, item) => sum + Number(item.price) * Number(item.quantity),
+    (sum, item) => sum + Number(item.cost_price) * Number(item.quantity),
     0
   );
+
+  // const fetchSelectedItemPrice = async (itemId) => {
+  //   try {
+  //     // TODO: optimize
+  //     // create getSelectedItemPrice function
+  //     const res = await getSelectedItemPrice(itemId);
+  //     if (res && res.length > 0) {
+  //       setSelectedItemPriceFromGrn(res[0].price);
+  //       form.setValue("price", res[0].price);
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to fetch item price:", error);
+  //   }
+  // };
 
   const onItemDetailsSubmit = (values) => {
     const newItem = {
       item_id: values.item.id,
       item_name: values.item.item_name,
       quantity: values.quantity,
-      price: values.price,
-      value: Number(values.quantity) * Number(values.price),
+      cost_price: values.cost_price,
+      value: Number(values.quantity) * Number(values.cost_price),
     };
 
     setIssuedItems((prev) => [...prev, newItem]);
@@ -122,7 +136,6 @@ const page = () => {
       issuedItems,
     };
 
-    // TODO: Loading status
     // TODO: second verification dialog
 
     try {
@@ -222,6 +235,7 @@ const page = () => {
                                                 setSelectedItemStock(
                                                   item.stock
                                                 );
+                                                // fetchSelectedItemPrice(item.id);
                                               }}
                                             >
                                               {item.item_name}
@@ -273,7 +287,7 @@ const page = () => {
                         />
                         <FormField
                           control={form.control}
-                          name="price"
+                          name="cost_price"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Price</FormLabel>
@@ -315,11 +329,11 @@ const page = () => {
                             </TableCell>
                             <TableCell>{item.quantity}</TableCell>
                             <TableCell>
-                              {Number(item.price).toFixed(2)}
+                              {Number(item.cost_price).toFixed(2)}
                             </TableCell>
                             <TableCell>
                               {(
-                                Number(item.price) * Number(item.quantity)
+                                Number(item.cost_price) * Number(item.quantity)
                               ).toFixed(2)}
                             </TableCell>
                             <TableCell className="text-right">

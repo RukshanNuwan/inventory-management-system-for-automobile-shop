@@ -66,7 +66,7 @@ const page = () => {
                 <TableCell className="font-medium">{item.item_name}</TableCell>
                 <TableCell className="text-right">{item.quantity}</TableCell>
                 <TableCell className="text-right">
-                  {Number(item.price).toFixed(2)}
+                  {Number(item.cost_price).toFixed(2)}
                 </TableCell>
                 <TableCell className="text-right font-semibold">
                   {Number(item.value).toFixed(2)}

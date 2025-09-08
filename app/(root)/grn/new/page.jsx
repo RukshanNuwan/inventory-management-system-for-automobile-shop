@@ -10,6 +10,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
   Form,
   FormControl,
   FormField,
@@ -42,20 +50,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { addGrn } from "@/lib/actions/grn.actions";
-import { getItems } from "@/lib/actions/item.actions";
+import { getItems, modifyStock } from "@/lib/actions/item.actions";
 import { getSuppliers } from "@/lib/actions/supplier.actions";
 import { receiveNoteFormSchema } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 const page = () => {
-  const [formData, setFormData] = useState({});
   const [receivedItems, setReceivedItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState();
@@ -115,7 +122,7 @@ const page = () => {
   const onItemDetailsSubmit = (values) => {
     const newItem = {
       item_id: values.item.id,
-      item_name: values.item.name,
+      item_name: values.item.item_name,
       quantity: values.quantity,
       cost_price: values.cost_price,
       value: Number(values.quantity) * Number(values.cost_price),
@@ -191,34 +198,64 @@ const page = () => {
                           control={form.control}
                           name="item"
                           render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Item</FormLabel>
-                              <Select
-                                onValueChange={(value) => {
-                                  const selectedItem = items.find(
-                                    (i) => i.id === value
-                                  );
-                                  field.onChange({
-                                    id: value,
-                                    name: selectedItem?.item_name || "",
-                                  });
-                                }}
-                                defaultValue={field.value?.id}
-                              >
-                                <FormControl>
-                                  <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Select an Item" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {items &&
-                                    items.map((item) => (
-                                      <SelectItem key={item.id} value={item.id}>
-                                        {item.item_name}
-                                      </SelectItem>
-                                    ))}
-                                </SelectContent>
-                              </Select>
+                            <FormItem className="flex flex-col">
+                              <FormLabel>Items</FormLabel>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <FormControl>
+                                    <Button
+                                      variant="outline"
+                                      role="combobox"
+                                      className={cn(
+                                        "w-full justify-between",
+                                        !field.value && "text-muted-foreground"
+                                      )}
+                                    >
+                                      {field.value
+                                        ? items.find(
+                                            (item) => item.id === field.value.id
+                                          )?.item_name
+                                        : "Select item"}
+                                      <ChevronsUpDown className="opacity-50" />
+                                    </Button>
+                                  </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-full p-0">
+                                  <Command>
+                                    <CommandInput
+                                      placeholder="Search item..."
+                                      className="h-9"
+                                    />
+                                    <CommandList>
+                                      <CommandEmpty>
+                                        No item found.
+                                      </CommandEmpty>
+                                      <CommandGroup>
+                                        {items &&
+                                          items.map((item) => (
+                                            <CommandItem
+                                              value={item.item_name}
+                                              key={item.id}
+                                              onSelect={() => {
+                                                form.setValue("item", item);
+                                              }}
+                                            >
+                                              {item.item_name}
+                                              <Check
+                                                className={cn(
+                                                  "ml-auto",
+                                                  item.id === field.value
+                                                    ? "opacity-100"
+                                                    : "opacity-0"
+                                                )}
+                                              />
+                                            </CommandItem>
+                                          ))}
+                                      </CommandGroup>
+                                    </CommandList>
+                                  </Command>
+                                </PopoverContent>
+                              </Popover>
                               <FormMessage />
                             </FormItem>
                           )}
@@ -433,8 +470,13 @@ const page = () => {
                         )}
                       />
 
-                      <div className="flex gap-2 justify-end">
+                      <div
+                        type="submit"
+                        className="flex gap-2 justify-end"
+                        disabled={isLoading}
+                      >
                         <Button type="submit" className="bg-[#0d97ff]">
+                          {isLoading && <Loader2 className="animate-spin" />}
                           Submit
                         </Button>
                       </div>
