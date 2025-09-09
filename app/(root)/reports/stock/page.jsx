@@ -1,12 +1,19 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+import DataTable from "./data-table";
 
 const page = () => {
-  const [searchText, setSearchText] = useState("");
-
   const printRef = useRef(null);
 
-  const handlePrint = useReactToPrint({})
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+    documentTitle: "Stock Report",
+  });
 
   return (
     <section>
@@ -16,18 +23,25 @@ const page = () => {
 
       <main className="no-scrollbar flex w-full p-2">
         <div className="w-full h-full">
-          <div className="py-4">
-            <h1 className="font-bold text-3xl">Stock Details</h1>
-            <p className="text-sm text-muted-foreground">
-              View stock details for your inventory.
-            </p>
+          <div className="py-4 flex items-center justify-between">
+            <div>
+              <h1 className="font-bold text-3xl">Stock Details</h1>
+              <p className="text-sm text-muted-foreground">
+                View stock details for your inventory.
+              </p>
+            </div>
+
+            <Button onClick={handlePrint}>Print Report</Button>
           </div>
         </div>
       </main>
 
-      <div className="p-2 w-full">
-        {/* All items and their stock levels */}
-        DATA_TABLE
+      <div ref={printRef} className="p-2 w-full">
+        <Card>
+          <CardContent>
+            <DataTable />
+          </CardContent>
+        </Card>
       </div>
     </section>
   );

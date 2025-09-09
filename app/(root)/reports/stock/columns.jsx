@@ -1,6 +1,5 @@
 "use client";
 
-import DataTableActions from "@/components/dataTable/DataTableActions";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowUpDown } from "lucide-react";
@@ -88,13 +87,5 @@ export const columns = [
       );
     },
     cell: ({ row }) => <div>{row.getValue("rack_number") || "-"}</div>,
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const itemData = row.original;
-
-      return <DataTableActions original={itemData} collectionName="items" />;
-    },
   },
 ];
