@@ -4,16 +4,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import React, { useRef } from "react";
-import { useReactToPrint } from "react-to-print";
 import DataTable from "./data-table";
 
 const page = () => {
   const printRef = useRef(null);
 
-  const handlePrint = useReactToPrint({
-    content: () => printRef.current,
-    documentTitle: "Stock Report",
-  });
+  const handlePrint = () => {
+    console.log("Under Development");
+  };
+
+  // const handlePrint = useReactToPrint({
+  // content: () => printRef.current,
+  // documentTitle: "Stock Report",
+
+  // });
 
   return (
     <section>
