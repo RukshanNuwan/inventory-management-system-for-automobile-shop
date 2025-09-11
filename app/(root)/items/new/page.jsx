@@ -42,8 +42,13 @@ const page = () => {
   const onFormSubmit = async (data) => {
     setIsLoading(true);
 
+    const finalObject = {
+      ...data,
+      item_name: data.part_number + " " + data.item_name,
+    };
+
     try {
-      const response = await addItem(data);
+      const response = await addItem(finalObject);
 
       if (response === "success") {
         toast.success("Success! Data saved successfully.");

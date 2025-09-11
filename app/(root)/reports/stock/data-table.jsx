@@ -22,7 +22,7 @@ const DataTable = () => {
     <CustomDataTable
       columns={columns}
       data={data}
-      column="item"
+      column="item_name"
       placeholder="Search by Item Name"
     />
   );

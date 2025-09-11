@@ -473,7 +473,11 @@ const page = () => {
                         className="flex gap-2 justify-end"
                         disabled={isLoading}
                       >
-                        <Button type="submit" className="bg-[#0d97ff]">
+                        <Button
+                          type="submit"
+                          className="bg-[#0d97ff]"
+                          disabled={isLoading}
+                        >
                           {isLoading && <Loader2 className="animate-spin" />}
                           Submit
                         </Button>

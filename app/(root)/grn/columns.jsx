@@ -91,11 +91,9 @@ export const columns = [
       return (
         <div className="flex flex-wrap gap-1 max-w-[40vw]">
           {receivedItems.map((item, index) => (
-            <>
-              <Badge key={index}>
-                {item.item_name} - {item.quantity}
-              </Badge>
-            </>
+            <Badge key={index}>
+              {item.item_name} - {item.quantity}
+            </Badge>
           ))}
         </div>
       );
